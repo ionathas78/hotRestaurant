@@ -59,6 +59,10 @@ app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get("/Images/soup", function(req, res) {   
+    res.sendFile(path.join(__dirname, "/Images/ella-olsson-fxJTl_gDh28-unsplash.jpg"));
+});
+
 app.get("/reserve", function(req, res) {
 res.sendFile(path.join(__dirname, "reserve.html"));
 });
@@ -99,6 +103,11 @@ app.post("/api/reservations", function(req, res) {
 
     res.json(newReservation);
 });
+
+app.get("*", function(req, res) {
+    console.log(req.url);
+});
+
 
 // Starts the server to begin listening
 // =============================================================
