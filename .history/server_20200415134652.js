@@ -34,17 +34,19 @@ class Reservation {
     };
 
     toJSON() {
-        return {
-            routeName: this.routeName,
+        jsonThis = {
+            routeName = this.routeName,
             name: this.name,
             partyCount: this.partyCount,
             seatingPreference: this.seatingPreference,
             ticketNumber: this.ticketNumber
         };
+
+        return JSON.stringify(jsonThis);
     };
 
     toString() {
-        return JSON.stringify(this.toJSON());
+        return this.toJSON();
     };
 };
 
@@ -53,56 +55,50 @@ class Reservation {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//  Routing
-
 app.get("/", function(req, res) {
     res.sendFile(path.join(__dirname, "index.html"));
-});
+  });
+  
+  app.get("/reserve", function(req, res) {
+    res.sendFile(path.join(__dirname, "reserve.html"));
+  });
+  
+  app.get("/api/reservations", function(req, res) {
+      return _reservations;
+  });
 
-app.get("/reserve", function(req, res) {
-res.sendFile(path.join(__dirname, "reserve.html"));
-});
-
-app.get("/api/reservations", function(req, res) {
-    if (_reservations) {
-        return _reservations;
-    } else {
-        return false;
-    };
-});
-
-app.get("/api/ticketnumber", function(req, res) {
+  app.get("/api/ticketnumber", function(req, res) {
     return _ticketNumber + 1;
-});
-
-app.get("/api/reservations/:name", function(req, res) {
+  });
+  
+  app.get("/api/reservations/:name", function(req, res) {
 
     var chosen = req.params.name;
-
+  
     console.log(chosen);
-    const find = _reservations.find(item => item.routeName == chosen);
+  
+    for (var i = 0; i < _reservations.length; i++) {
+      if (chosen === _reservations[i].name) {
+        return res.json(_reservations[i]);
+      }
+    }
+  
+    return res.json(false);
+  });
 
-    if (find) {
-        return find;
-    } else {
-        return false;
-    };
-});
-
-app.post("/api/reservations", function(req, res) {
-    const { name, partyCount, seatingPreference, ticketNumber } = req.body;
-    var newReservation = new Reservation(name, partyCount, seatingPreference, ticketNumber);
-
+  app.post("/api/reservations", function(req, res) {
+    var newReservation = new Reservation(req.body.name, req.body.partyCount, req.body.seatingPreference);
+  
     console.log(newReservation.toJSON());
-
-    _reservations.push(newReservation);
-
+  
+    characters.push(newReservation);
+  
     res.json(newReservation);
-});
-
-// Starts the server to begin listening
-// =============================================================
-app.listen(PORT, function() {
-console.log("App listening on PORT " + PORT);
-});
+  });
+  
+  // Starts the server to begin listening
+  // =============================================================
+  app.listen(PORT, function() {
+    console.log("App listening on PORT " + PORT);
+  });
   
