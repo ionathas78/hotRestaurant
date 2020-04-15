@@ -91,13 +91,13 @@ app.get("/api/reservations/:name", function(req, res) {
 
 app.post("/api/reservations", function(req, res) {
     const { name, partyCount, seatingPreference, ticketNumber } = req.body;
-    var newReservation = new Reservation(name, partyCount, seatingPreference, ticketNumber);
+var newReservation = new Reservation(name, partyCount, seatingPreference, ticketNumber);
 
-    console.log(newReservation.toJSON());
+console.log(newReservation.toJSON());
 
-    _reservations.push(newReservation);
+_reservations.push(newReservation);
 
-    res.json(newReservation);
+res.json(newReservation);
 });
 
 // Starts the server to begin listening

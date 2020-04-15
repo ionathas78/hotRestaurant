@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300&display=swap" rel="stylesheet">
+
+    <style type="text/CSS">
+        * {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 16px;
+        }
+    </style>
+
+    <title>Soup4U</title>
+</head>
+<body>
+    <header class="nav nav-header p-3" style="background-color: lightskyblue; color: #eee;">
+        <h1 class="text-center">Soup 4U</h1>
+    </header>
+
+    <main>
+        <div class="row m-1 col-12">
+            <label for="reservation-name">Name on reservation:</label>
+            <input type="text" id="reservation-name">
+            <br>
+            <label for="party-count">Number in party:</label>
+            <input type="number" id="party-count">
+            <br>
+            <label for="seating-preference">Seating preference:</label>
+            <select id="seating-preference">
+                <option value="0" selected>No preference</option>
+                <option value="1">Bar seating</option>
+                <option value="2">Table</option>
+                <option value="3">Booth</option>
+                <option value="4" disabled>Patio seating</option>
+            </select>
+        </div>
+        <div class="row m-2 col-4">
+            <button id="submit-reservation">Submit Reservation</button>
+        </div>
+    </main>
+
+    <!-- JS goes here -->
+    
+    <script type="text/JavaScript">
+       $("#submit-reservation").on("click", function(event) {
+            event.preventDefault();
+
+            let ticketNumber = -1;
+            $.get("/api/ticketnumber", data => ticketNumber = data);
+
+            let userName = $("#reservation-name").val().trim();
+            let userCount = $("#party-count").val();
+            let userSeat = $("#seating-preference").val()
+
+            var newCharacter = {
+                name: userName,
+                partyCount: userCount,
+                seatingPreference: userSeat,
+                ticketNumber: ticketNumber;
+            };
+
+            $.post("/api/reservations", newCharacter)
+                .then(function(data) {
+                console.log("add.html", data);
+                let msgAlert = "Seat reserved!";
+                if (ticketNumber > -1) {
+                    msgAlert = "Your reservation number is #" + ticketNumber;
+                };
+                alert(msgAlert);
+
+                $("#reservation-name").val("");
+                $("#party-count").val("");
+                $("#seating-preference").val("");
+                });
+        });
+    </script>
+</body>
+</html>

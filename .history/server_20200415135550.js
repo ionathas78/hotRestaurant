@@ -64,15 +64,11 @@ res.sendFile(path.join(__dirname, "reserve.html"));
 });
 
 app.get("/api/reservations", function(req, res) {
-    if (_reservations) {
-        return _reservations;
-    } else {
-        return false;
-    };
+    return _reservations;
 });
 
 app.get("/api/ticketnumber", function(req, res) {
-    return _ticketNumber + 1;
+return _ticketNumber + 1;
 });
 
 app.get("/api/reservations/:name", function(req, res) {
@@ -80,24 +76,25 @@ app.get("/api/reservations/:name", function(req, res) {
     var chosen = req.params.name;
 
     console.log(chosen);
-    const find = _reservations.find(item => item.routeName == chosen);
 
-    if (find) {
-        return find;
-    } else {
-        return false;
-    };
+    for (var i = 0; i < _reservations.length; i++) {
+        if (chosen === _reservations[i].routeName) {
+            return res.json(_reservations[i]);
+        }
+    }
+
+    return res.json(false);
 });
 
 app.post("/api/reservations", function(req, res) {
     const { name, partyCount, seatingPreference, ticketNumber } = req.body;
-    var newReservation = new Reservation(name, partyCount, seatingPreference, ticketNumber);
+var newReservation = new Reservation(name, partyCount, seatingPreference, ticketNumber);
 
-    console.log(newReservation.toJSON());
+console.log(newReservation.toJSON());
 
-    _reservations.push(newReservation);
+_reservations.push(newReservation);
 
-    res.json(newReservation);
+res.json(newReservation);
 });
 
 // Starts the server to begin listening
